@@ -11,7 +11,7 @@ using std::string;
 
 class NaiveAlgo {
 public:
-    static int CheckPatternOccur(const string &TEXT, const string &PATTERN);
+    static int CheckPatternOccur(const string& TEXT, const string& PATTERN);
 };
 
 

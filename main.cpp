@@ -2,31 +2,40 @@
 #include <fstream>
 #include <vector>
 #include "NaiveAlgo.h"
-#include "SuffixTree.h"
+#include "SuffixTreeAlgo.h"
 
 using std::string;
 using std::cout;
 using std::endl;
 
-const string readText(const string& filePath);
-const std::vector<string> readPatterns(const string& filePath);
-void removeR(string& line);
-void generateString();
+const string readText(const string &filePath);
+
+const std::vector<string> readPatterns(const string &filePath);
+
+void removeR(string &line);
+
+void generateString(int length);
+
+void tryToTraverseSuffixTree();
 
 int main() {
-    //    generateString();
+//        generateString(100);
 
     // EDIT THE TEST CASE FOLDER HERE
-    const string TEST_CASE = "test_case_1";
+    const int TEST_CASE = 1;
 
     // Read input
     clock_t clock_1 = clock();
-    const string TEXT = readText("/Users/midnightblur/Documents/workspace/CLionProjects/COMP6651_Assignment02/test_cases/" + TEST_CASE + "/string.txt");
-    const std::vector<string> PATTERNS = readPatterns("/Users/midnightblur/Documents/workspace/CLionProjects/COMP6651_Assignment02/test_cases/" + TEST_CASE + "/patterns.txt");
+    const string TEXT = readText(
+            "/Users/midnightblur/Documents/workspace/CLionProjects/COMP6651_Assignment02/test_cases/test_case_" +
+                    std::to_string(TEST_CASE) + "/string.txt");
+    const std::vector<string> PATTERNS = readPatterns(
+            "/Users/midnightblur/Documents/workspace/CLionProjects/COMP6651_Assignment02/test_cases/test_case_" +
+                    std::to_string(TEST_CASE) + "/patterns.txt");
 
     // Build the Suffix Tree
-    SuffixTree tree;
-    tree.construct(TEXT);
+    SuffixTreeAlgo tree;
+    tree.buildSuffixTree(const_cast<char *>(TEXT.c_str()));
     clock_t clock_2 = clock();
     float dict_diff((float) clock_2 - (float) clock_1);
     cout << "Finish reading input and building suffix tree in " << dict_diff / (CLOCKS_PER_SEC / 1000) << "ms" << endl;
@@ -43,13 +52,16 @@ int main() {
 
     // Run Suffix tree algorithm
     clock_1 = clock();
-
+    for (auto it = PATTERNS.begin(); it != PATTERNS.end(); it++) {
+        tree.checkForSubString(*it);
+    }
     clock_2 = clock();
     dict_diff = (float) clock_2 - (float) clock_1;
     cout << "Finish Suffix Tree algorithm in " << dict_diff / (CLOCKS_PER_SEC / 1000) << "ms" << endl;
+    tree.freeSuffixTreeByPostOrder(tree.getRoot());
 }
 
-const string readText(const string& filePath) {
+const string readText(const string &filePath) {
     std::ifstream file(filePath);
     string text;
     std::getline(file, text);
@@ -58,7 +70,7 @@ const string readText(const string& filePath) {
     return text;
 }
 
-const std::vector<string> readPatterns(const string& filePath) {
+const std::vector<string> readPatterns(const string &filePath) {
     std::ifstream file(filePath);
     std::vector<string> patterns;
     string line;
@@ -75,16 +87,16 @@ const std::vector<string> readPatterns(const string& filePath) {
     return patterns;
 }
 
-void removeR(string& line) {
+void removeR(string &line) {
     if (!line.empty() && line.at(line.size() - 1) == '\r')
         line.erase(line.size() - 1);
 }
 
-void generateString() {
+void generateString(int length) {
     srand(static_cast<unsigned int>(time(nullptr)));
-    for (int i = 0; i < 400000; i++) {
+    for (int i = 0; i < length; i++) {
         int num = rand() % 26;
         cout << (char) (97 + num);
     }
-    cout << "$";
+    cout << '\r';
 }
