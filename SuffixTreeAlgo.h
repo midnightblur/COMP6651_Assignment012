@@ -44,7 +44,7 @@ class SuffixTreeAlgo {
 
     typedef struct SuffixTreeNode Node;
 
-    char text[100]; //Input string
+    char text[400000]; //Input string
     Node *root = nullptr; //Pointer to root node
 
 /*lastNewNode will point to newly created internal node,
@@ -278,31 +278,34 @@ class SuffixTreeAlgo {
     int traverseEdge(const string &str, int idx, int start, int end) {
         int k = 0;
         //Traverse the edge with character by character matching
+        int tmp = idx;
         for (k = start; k <= end && str[idx] != '\0'; k++, idx++) {
             if (text[k] != str[idx])
                 return -1;  // mo match
         }
-        if (str[idx] == '\0')
-            return 1;  // match
-        return 0;  // more characters yet to match
+        if (str[idx] == '\0') {
+//            cout << start << " -   " << str << endl;
+            return start - tmp;  // match
+        }
+        return -2;  // more characters yet to match
     }
 
     int doTraversal(Node *n, const string &str, int idx) {
-        if (n == nullptr) {
-            return -1; // no match
-        }
         int res = -1;
+        if (n == nullptr) {
+            return res; // no match
+        }
         //If node n is not root node, then traverse edge
         //from node n's parent to node n.
         if (n->start != -1) {
             res = traverseEdge(str, idx, n->start, *(n->end));
-            if (res != 0)
+            if (res !=- 2)
                 return res;  // match (res = 1) or no match (res = -1)
         }
         //Get the character index to search
         idx = idx + edgeLength(n);
         //If there is an edge from node n going out
-        //with current character str[idx], travrse that edge
+        //with current character str[idx], traverse that edge
         if (n->children[str[idx]] != nullptr)
             return doTraversal(n->children[str[idx]], str, idx);
         else
@@ -319,7 +322,7 @@ public:
        for non-leaf edges will be -1*/
     void buildSuffixTree(char *str) {
         strcpy(text, str);
-        size = strlen(text);
+        size = static_cast<int>(strlen(text));
         int i;
         rootEnd = (int *) malloc(sizeof(int));
         *rootEnd = -1;
@@ -337,12 +340,7 @@ public:
 
     void checkForSubString(const string &str) {
         int res = doTraversal(root, str, 0);
-        if (res != -1) {
-            printf("Pattern <%s> is a Substring\n", str.c_str());
-            cout << res << endl;
-        } else {
-            printf("Pattern <%s> is NOT a Substring\n", str.c_str());
-        }
+        cout << res << endl;
     }
 
     void freeSuffixTreeByPostOrder(Node *n) {
