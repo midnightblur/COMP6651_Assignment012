@@ -44,7 +44,7 @@ class SuffixTreeAlgo {
 
     typedef struct SuffixTreeNode Node;
 
-    char text[400000]; //Input string
+    char text[1000000]; //Input string
     Node *root = nullptr; //Pointer to root node
 
 /*lastNewNode will point to newly created internal node,
@@ -299,7 +299,7 @@ class SuffixTreeAlgo {
         //from node n's parent to node n.
         if (n->start != -1) {
             res = traverseEdge(str, idx, n->start, *(n->end));
-            if (res !=- 2)
+            if (res != -2)
                 return res;  // match (res = 1) or no match (res = -1)
         }
         //Get the character index to search
@@ -338,9 +338,10 @@ public:
         setSuffixIndexByDFS(root, labelHeight);
     }
 
-    void checkForSubString(const string &str) {
+    int checkForSubString(const string &str) {
         int res = doTraversal(root, str, 0);
-        cout << res << endl;
+//        cout << "res = " << res << endl;
+        return res;
     }
 
     void freeSuffixTreeByPostOrder(Node *n) {
