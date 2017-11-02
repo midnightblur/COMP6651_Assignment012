@@ -21,7 +21,7 @@ void modifyInput();
 void runTest(const int TEST_CASE);
 
 int main() {
-//    generateInput(400000, 200, 10000, 16);
+//    generateInput(1000000, 50000, 10000, 17);
 //    modifyInput();
     runTest(16);
 }
